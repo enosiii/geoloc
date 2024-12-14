@@ -119,6 +119,7 @@ async function main() {
       // Update location data on Google Sheet and map
       await updateUserOnSheet(latitude, longitude);
       updateMarker(map, latitude, longitude, username, selectedAvatar);
+      centerMap(latitude, longitude);
     });
   } else {
     alert("Geolocation is not supported by your browser.");
