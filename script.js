@@ -17,7 +17,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 function loadAvatars() {
   const avatarContainer = document.querySelector(".avatars");
-  for (let i = 1; i <= 20; i++) {
+  for (let i = 1; i <= 3; i++) {
     const img = document.createElement("img");
     img.src = `assets/markers/${String(i).padStart(2, "0")}.png`;
     img.alt = `Avatar ${i}`;
