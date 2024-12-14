@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Real-Time Location Sharing</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css">
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+</head>
+<body>
+  <!-- Header -->
+  <header>
+    <h1>Real-Time Location Sharing</h1>
+  </header>
+
+  <!-- Main Content -->
+  <div id="map-container">
+    <div id="map"></div>
+    <div id="user-setup">
+      <h3>Set Up Your Profile</h3>
+      <input type="text" id="username" placeholder="Enter your username" />
+      <div id="avatar-picker">
+        <h3>Select Your Avatar</h3>
+        <div class="avatars">
+          <!-- Avatar options dynamically added here -->
+        </div>
+      </div>
+      <button id="confirm-setup">Save Profile & Start Sharing</button>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
