@@ -192,7 +192,8 @@ function greetUser() {
 document.getElementById("start-sharing").addEventListener("click", main);
 document.getElementById("change-name").addEventListener("click", changeUsername);
 document.getElementById("refresh-page").addEventListener("click", () => {
-  window.location.href = window.location.href;
+  const currentUrl = window.location.href.split("?")[0];
+  window.location.href = `${currentUrl}?refresh=${new Date().getTime()}`;
 });
 document.getElementById("center-map").addEventListener("click", () => {
   if (navigator.geolocation) {
