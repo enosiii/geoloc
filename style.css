@@ -34,7 +34,7 @@ body {
   padding: 10px;
   color: white;
   background: #0056b3;
-  border: none;
+  border: auto;
   border-radius: 5px;
   cursor: pointer;
 }
@@ -48,7 +48,6 @@ body {
   flex-direction: column;
   justify-content: space-between;
   height: 15%;
-  margin: 10px;
 }
 
 #map {
@@ -93,7 +92,7 @@ button {
   font-size: 16px;
   background-color: #007bff;
   color: white;
-  border: none;
+  border: 5px;
   border-radius: 5px;
   cursor: pointer;
 }
