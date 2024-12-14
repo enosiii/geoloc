@@ -1,4 +1,4 @@
-const SHEET_URL = "YOUR_DEPLOYMENT_URL_HERE"; // Replace with your Apps Script Web App URL
+const SHEET_URL = "https://script.google.com/macros/s/AKfycbzgRtEcp2ZBLqERAG947frZB_Vnm4DA7Ds50qUN6NchnZCVCjshMesCvF4TBGJ0Zni8/exec"; // Replace with your Apps Script Web App URL
 const avatarFolder = "assets/markers/";
 const avatarCount = 3; // Number of avatars in the folder
 
@@ -8,9 +8,20 @@ let selectedAvatar = localStorage.getItem("avatar") || `${avatarFolder}01.png`;
 // Initialize the map
 function initMap() {
   const map = L.map("map").setView([0, 0], 2); // Default view
-  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+  const streetView = L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
     attribution: '© OpenStreetMap contributors'
+  });
+  const satelliteView = L.tileLayer("https://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}", {
+    attribution: '© Google',
+    subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
+  });
+  streetView.addTo(map);
+
+  L.control.layers({
+    "Street View": streetView,
+    "Satellite View": satelliteView
   }).addTo(map);
+
   return map;
 }
 
@@ -45,9 +56,8 @@ async function fetchAndUpdateMarkers(map) {
   const users = await response.json();
 
   users.forEach(user => {
-    const { UserID, Latitude, Longitude } = user;
-    const avatarPath = `${avatarFolder}${String(UserID).padStart(2, "0")}.png` || `${avatarFolder}01.png`;
-    addMarkerToMap(map, Latitude, Longitude, UserID, avatarPath);
+    const { UserID, Latitude, Longitude, Avatar } = user;
+    addMarkerToMap(map, Latitude, Longitude, UserID, Avatar || `${avatarFolder}01.png`);
   });
 }
 
@@ -62,7 +72,7 @@ async function main() {
       if (saveUserData()) {
         await fetch(SHEET_URL, {
           method: "POST",
-          body: JSON.stringify({ UserID: username, Latitude: latitude, Longitude: longitude })
+          body: JSON.stringify({ UserID: username, Latitude: latitude, Longitude: longitude, Avatar: selectedAvatar })
         });
         addMarkerToMap(map, latitude, longitude, username, selectedAvatar);
       }
@@ -92,5 +102,35 @@ function populateAvatars() {
   }
 }
 
+// Change username
+function changeUsername() {
+  const newUsername = prompt("Enter your new username:");
+  if (newUsername) {
+    localStorage.setItem("username", newUsername);
+    alert(`Username changed to ${newUsername}.`);
+  }
+}
+
 document.getElementById("start-sharing").addEventListener("click", main);
+document.getElementById("change-name").addEventListener("click", changeUsername);
+
+document.getElementById("center-map").addEventListener("click", () => {
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition((position) => {
+      const { latitude, longitude } = position.coords;
+      map.setView([latitude, longitude], 15); // Adjust zoom level
+    });
+  } else {
+    alert("Geolocation is not supported by your browser.");
+  }
+});
+
 populateAvatars();
+
+window.onload = () => {
+  const savedUsername = localStorage.getItem("username");
+  if (savedUsername) {
+    alert(`Welcome back, ${savedUsername}!`);
+    document.getElementById("username").value = savedUsername;
+  }
+};
