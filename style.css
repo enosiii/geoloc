@@ -41,7 +41,7 @@ body {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  height: 30%;
+  height: 20%;
 }
 
 #map {
