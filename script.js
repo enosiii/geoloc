@@ -1,6 +1,6 @@
 const SHEET_URL = "https://script.google.com/macros/s/AKfycbzgRtEcp2ZBLqERAG947frZB_Vnm4DA7Ds50qUN6NchnZCVCjshMesCvF4TBGJ0Zni8/exec"; // Replace with your Apps Script Web App URL
 const avatarFolder = "assets/markers/";
-const avatarCount = 3; // Number of avatars in the folder
+const avatarCount = 5; // Number of avatars in the folder
 
 let username = localStorage.getItem("username") || "";
 let selectedAvatar = localStorage.getItem("avatar") || `${avatarFolder}01.png`;
