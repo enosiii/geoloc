@@ -1,4 +1,4 @@
-const SHEET_URL = "YOUR_DEPLOYMENT_URL_HERE"; // Replace with your Apps Script Web App URL
+const SHEET_URL = "https://script.google.com/macros/s/AKfycbzgRtEcp2ZBLqERAG947frZB_Vnm4DA7Ds50qUN6NchnZCVCjshMesCvF4TBGJ0Zni8/exec"; // Replace with your Apps Script Web App URL
 const avatarFolder = "assets/markers/";
 const avatarCount = 3; // Number of avatars in the folder
 
