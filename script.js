@@ -28,8 +28,10 @@ function initMap() {
 
 // Add or update a marker on the map
 function updateMarker(map, lat, lng, username, avatar) {
+  console.log(`Updating marker for ${username} at (${lat}, ${lng}) with avatar ${avatar}`);
+
   if (markers[username]) {
-    map.removeLayer(markers[username]); // Remove old marker
+    map.removeLayer(markers[username]);
   }
 
   const customIcon = L.icon({
@@ -42,8 +44,9 @@ function updateMarker(map, lat, lng, username, avatar) {
     .bindPopup(`<b>${username}</b>`);
   marker.addTo(map);
 
-  markers[username] = marker; // Save marker for future reference
+  markers[username] = marker;
 }
+
 
 // Save username and avatar (only for first-time users)
 function saveUserData() {
