@@ -12,8 +12,16 @@ body {
   width: 100%;
   display: flex;
   justify-content: space-between;
+  align-items: center;
   padding: 10px;
   background: #007bff;
+}
+
+.greet {
+  color: white;
+  font-size: 18px;
+  margin-right: auto;
+  padding-left: 10px;
 }
 
 .navbar button {
@@ -30,15 +38,17 @@ body {
 }
 
 .container {
-  margin-top: 20px;
-  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 30%;
 }
 
 #map {
-  height: 70vh; /* Ensure height takes up space on the page */
+  flex-grow: 1;
+  height: 70%; /* Use remaining space */
   width: 100%;
-  margin-top: 20px; /* Add spacing if needed */
-  border: 1px solid #ddd; /* Optional: for clarity */
+  border: 1px solid #ddd;
 }
 
 
