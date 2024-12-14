@@ -1,13 +1,16 @@
-const SHEET_URL = "https://script.google.com/macros/s/AKfycbzgRtEcp2ZBLqERAG947frZB_Vnm4DA7Ds50qUN6NchnZCVCjshMesCvF4TBGJ0Zni8/exec"; // Replace with your Apps Script Web App URL
+const SHEET_URL = "YOUR_DEPLOYMENT_URL_HERE"; // Replace with your Apps Script Web App URL
 const avatarFolder = "assets/markers/";
 const avatarCount = 3; // Number of avatars in the folder
 
 let username = localStorage.getItem("username") || "";
 let selectedAvatar = localStorage.getItem("avatar") || `${avatarFolder}01.png`;
 
+const markers = {}; // Object to store markers by username
+let map; // Define the map globally
+
 // Initialize the map
 function initMap() {
-  const map = L.map("map").setView([0, 0], 2); // Default view
+  map = L.map("map").setView([0, 0], 2); // Default view
   const streetView = L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
     attribution: '© OpenStreetMap contributors'
   });
@@ -21,21 +24,25 @@ function initMap() {
     "Street View": streetView,
     "Satellite View": satelliteView
   }).addTo(map);
-
-  return map;
 }
 
-// Add a marker to the map
-function addMarkerToMap(map, lat, lng, username, avatar) {
+// Add or update a marker on the map
+function updateMarker(map, lat, lng, username, avatar) {
+  if (markers[username]) {
+    map.removeLayer(markers[username]); // Remove old marker
+  }
+
   const customIcon = L.icon({
     iconUrl: avatar,
     iconSize: [40, 40],
     iconAnchor: [20, 40],
   });
 
-  L.marker([lat, lng], { icon: customIcon })
-    .bindPopup(`<b>${username}</b>`)
-    .addTo(map);
+  const marker = L.marker([lat, lng], { icon: customIcon })
+    .bindPopup(`<b>${username}</b>`);
+  marker.addTo(map);
+
+  markers[username] = marker; // Save marker for future reference
 }
 
 // Save username and avatar
@@ -57,24 +64,32 @@ async function fetchAndUpdateMarkers(map) {
 
   users.forEach(user => {
     const { UserID, Latitude, Longitude, Avatar } = user;
-    addMarkerToMap(map, Latitude, Longitude, UserID, Avatar || `${avatarFolder}01.png`);
+    updateMarker(map, Latitude, Longitude, UserID, Avatar || `${avatarFolder}01.png`);
+  });
+}
+
+// Center the map on the user's location
+function centerMap(lat, lng) {
+  map.setView([lat, lng], 15); // Adjust zoom level
+}
+
+// Update user data on Google Sheets
+async function updateUserOnSheet(lat, lng) {
+  await fetch(SHEET_URL, {
+    method: "POST",
+    body: JSON.stringify({ UserID: username, Latitude: lat, Longitude: lng, Avatar: selectedAvatar })
   });
 }
 
 // Main function
 async function main() {
-  const map = initMap();
-
   if (navigator.geolocation) {
     navigator.geolocation.watchPosition(async (position) => {
       const { latitude, longitude } = position.coords;
 
       if (saveUserData()) {
-        await fetch(SHEET_URL, {
-          method: "POST",
-          body: JSON.stringify({ UserID: username, Latitude: latitude, Longitude: longitude, Avatar: selectedAvatar })
-        });
-        addMarkerToMap(map, latitude, longitude, username, selectedAvatar);
+        await updateUserOnSheet(latitude, longitude);
+        updateMarker(map, latitude, longitude, username, selectedAvatar);
       }
     });
   }
@@ -103,11 +118,30 @@ function populateAvatars() {
 }
 
 // Change username
-function changeUsername() {
+async function changeUsername() {
   const newUsername = prompt("Enter your new username:");
   if (newUsername) {
+    await fetch(SHEET_URL, {
+      method: "POST",
+      body: JSON.stringify({ UserID: newUsername, Latitude: null, Longitude: null, Avatar: selectedAvatar })
+    });
     localStorage.setItem("username", newUsername);
     alert(`Username changed to ${newUsername}.`);
+    location.reload(); // Reload to update UI
+  }
+}
+
+// Greet returning users or show username input
+function greetUser() {
+  const usernameSection = document.getElementById("username-section");
+  const greetLabel = document.getElementById("greet-label");
+
+  if (username) {
+    greetLabel.textContent = `Hello, ${username}`;
+    usernameSection.style.display = "none";
+  } else {
+    greetLabel.textContent = "";
+    usernameSection.style.display = "block";
   }
 }
 
@@ -118,7 +152,7 @@ document.getElementById("center-map").addEventListener("click", () => {
   if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition((position) => {
       const { latitude, longitude } = position.coords;
-      map.setView([latitude, longitude], 15); // Adjust zoom level
+      centerMap(latitude, longitude);
     });
   } else {
     alert("Geolocation is not supported by your browser.");
@@ -126,11 +160,4 @@ document.getElementById("center-map").addEventListener("click", () => {
 });
 
 populateAvatars();
-
-window.onload = () => {
-  const savedUsername = localStorage.getItem("username");
-  if (savedUsername) {
-    alert(`Welcome back, ${savedUsername}!`);
-    document.getElementById("username").value = savedUsername;
-  }
-};
+window.onload = greetUser;
