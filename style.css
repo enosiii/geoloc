@@ -11,7 +11,7 @@
 body {
   display: flex;
   flex-direction: column;
-  height: 95vh; /* Full height */
+  height: 100vh; /* Full height */
 }
 
 .navbar {
@@ -92,7 +92,7 @@ button {
   font-size: 16px;
   background-color: #007bff;
   color: white;
-  border: 5px;
+  border: none;
   border-radius: 5px;
   cursor: pointer;
 }
