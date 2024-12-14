@@ -209,6 +209,9 @@ window.onload = () => {
   initMap();
   adjustMapHeight();
   centerMapOnLoad()
+
+    // Fetch all markers periodically
+  setInterval(() => fetchAndUpdateMarkers(map), 3000); //3seconds
 };
 
 function adjustMapHeight() {
