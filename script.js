@@ -1,27 +1,24 @@
-const SHEET_URL = "https://script.google.com/macros/s/AKfycbzgRtEcp2ZBLqERAG947frZB_Vnm4DA7Ds50qUN6NchnZCVCjshMesCvF4TBGJ0Zni8/exec";
+const SHEET_URL = "YOUR_DEPLOYMENT_URL_HERE"; // Replace with your Apps Script Web App URL
 const avatarFolder = "assets/markers/";
-const avatarCount = 03; // Number of avatars in the folder
+const avatarCount = 3; // Number of avatars in the folder
 
 let username = localStorage.getItem("username") || "";
 let selectedAvatar = localStorage.getItem("avatar") || `${avatarFolder}01.png`;
 
 // Initialize the map
 function initMap() {
-  const map = L.map("map").setView([0, 0], 2); // Default view (world)
-  
-  // Add a tile layer (using Leaflet with OpenStreetMap)
+  const map = L.map("map").setView([0, 0], 2); // Default view
   L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
     attribution: '© OpenStreetMap contributors'
   }).addTo(map);
-
   return map;
 }
 
-// Add the user's marker to the map
+// Add a marker to the map
 function addMarkerToMap(map, lat, lng, username, avatar) {
   const customIcon = L.icon({
     iconUrl: avatar,
-    iconSize: [40, 40], // Customize marker size
+    iconSize: [40, 40],
     iconAnchor: [20, 40],
   });
 
@@ -37,20 +34,19 @@ function saveUserData() {
     alert("Please enter a username!");
     return false;
   }
-
   localStorage.setItem("username", username);
   localStorage.setItem("avatar", selectedAvatar);
   return true;
 }
 
-// Fetch all users from Google Sheets and display them on the map
+// Fetch and update markers
 async function fetchAndUpdateMarkers(map) {
   const response = await fetch(SHEET_URL);
   const users = await response.json();
 
   users.forEach(user => {
     const { UserID, Latitude, Longitude } = user;
-    const avatarPath = `${avatarFolder}${user.UserID}.png` || `${avatarFolder}01.png`;
+    const avatarPath = `${avatarFolder}${String(UserID).padStart(2, "0")}.png` || `${avatarFolder}01.png`;
     addMarkerToMap(map, Latitude, Longitude, UserID, avatarPath);
   });
 }
@@ -59,29 +55,24 @@ async function fetchAndUpdateMarkers(map) {
 async function main() {
   const map = initMap();
 
-  // Center map on user's location
   if (navigator.geolocation) {
     navigator.geolocation.watchPosition(async (position) => {
       const { latitude, longitude } = position.coords;
 
       if (saveUserData()) {
-        // Post user's data to Google Sheets
         await fetch(SHEET_URL, {
           method: "POST",
           body: JSON.stringify({ UserID: username, Latitude: latitude, Longitude: longitude })
         });
-
-        // Add or update user's marker
         addMarkerToMap(map, latitude, longitude, username, selectedAvatar);
       }
     });
   }
 
-  // Fetch and display all users
-  setInterval(() => fetchAndUpdateMarkers(map), 10000); // Update every 10 seconds
+  setInterval(() => fetchAndUpdateMarkers(map), 10000); // Refresh markers every 10 seconds
 }
 
-// Generate avatar selection
+// Generate avatars
 function populateAvatars() {
   const avatarList = document.getElementById("avatar-list");
   for (let i = 1; i <= avatarCount; i++) {
@@ -101,8 +92,5 @@ function populateAvatars() {
   }
 }
 
-// Start sharing button handler
 document.getElementById("start-sharing").addEventListener("click", main);
-
-// Populate avatars on page load
 populateAvatars();
