@@ -94,7 +94,7 @@ function centerMap(lat, lng) {
   map.setView([lat, lng], 15); // Adjust zoom level
 }
 
-function centerMapOnLoad(lat, lng) {
+function centerMapOnLoad() {
   map.setView([14.87, 120.826], 50); // Adjust zoom level
 }
 
@@ -208,6 +208,7 @@ window.onload = () => {
   greetUser();
   initMap();
   adjustMapHeight();
+  centerMapOnLoad()
 };
 
 function adjustMapHeight() {
