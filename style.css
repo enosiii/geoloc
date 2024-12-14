@@ -1,0 +1,30 @@
+/* Styles for username input */
+#user-setup {
+  width: 90%;
+  max-width: 400px;
+  margin-top: 10px;
+  text-align: center;
+}
+
+#username {
+  width: 90%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+#confirm-setup {
+  margin-top: 10px;
+  padding: 10px 20px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+#confirm-setup:hover {
+  background-color: #45a049;
+}
