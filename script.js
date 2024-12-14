@@ -40,7 +40,7 @@ function updateMarker(map, lat, lng, username, avatar, timestamp) {
     iconAnchor: [20, 40],
   });
 
-  //const lastUpdated = timestamp ? calculateTimeDifference(new Date(timestamp)) : "Unknown";
+  const lastUpdated = timestamp ? calculateTimeDifference(new Date(timestamp)) : "Unknown";
 
   const marker = L.marker([lat, lng], { icon: customIcon })
     .bindPopup(`<b>${username}</b><br>${lastUpdated}`);
