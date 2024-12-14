@@ -129,16 +129,29 @@ function populateAvatars() {
 // Change username
 async function changeUsername() {
   const newUsername = prompt("Enter your new username:");
-  if (newUsername) {
-    await fetch(SHEET_URL, {
+  if (newUsername && newUsername !== username) {
+    const response = await fetch(SHEET_URL, {
       method: "POST",
-      body: JSON.stringify({ UserID: newUsername, Latitude: null, Longitude: null, Avatar: selectedAvatar })
+      body: JSON.stringify({
+        UserID: username, // Old username to identify the record
+        NewUserID: newUsername, // New username to update
+        Latitude: null,
+        Longitude: null,
+        Avatar: selectedAvatar,
+      }),
     });
-    localStorage.setItem("username", newUsername);
-    alert(`Username changed to ${newUsername}.`);
-    location.reload(); // Reload to update UI
+
+    const result = await response.json();
+    if (result.status === "success") {
+      localStorage.setItem("username", newUsername);
+      alert(`Username successfully changed to ${newUsername}.`);
+      location.reload();
+    } else {
+      alert(`Failed to update username: ${result.message}`);
+    }
   }
 }
+
 
 // Greet returning users or show username input
 function greetUser() {
@@ -169,4 +182,7 @@ document.getElementById("center-map").addEventListener("click", () => {
 });
 
 populateAvatars();
-window.onload = greetUser;
+window.onload = () => {
+  greetUser();
+  initMap(); // Initialize the map on page load
+};
