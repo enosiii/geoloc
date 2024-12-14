@@ -121,7 +121,7 @@ async function main() {
   }
 
   // Fetch all markers periodically
-  setInterval(() => fetchAndUpdateMarkers(map), 10000);
+  setInterval(() => fetchAndUpdateMarkers(map), 3000); //3seconds
 }
 
 // Generate avatars
