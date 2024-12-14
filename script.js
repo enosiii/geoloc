@@ -91,11 +91,11 @@ async function fetchAndUpdateMarkers(map) {
 
 // Center the map on the user's location
 function centerMap(lat, lng) {
-  map.setView([lat, lng], 15); // Adjust zoom level
+  map.setView([lat, lng], 16); // Adjust zoom level
 }
 
 function centerMapOnLoad() {
-  map.setView([14.87, 120.826], 50); // Adjust zoom level
+  map.setView([14.87, 120.826], 14); // Adjust zoom level
 }
 
 // Update user data on Google Sheets
