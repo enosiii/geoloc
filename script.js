@@ -27,7 +27,7 @@ function initMap() {
 }
 
 // Add or update a marker on the map
-function updateMarker(map, lat, lng, username, avatar) {
+function updateMarker(map, lat, lng, username, avatar, timestamp) {
   console.log(`Updating marker for ${username} at (${lat}, ${lng}) with avatar ${avatar}`);
 
   if (markers[username]) {
@@ -40,12 +40,26 @@ function updateMarker(map, lat, lng, username, avatar) {
     iconAnchor: [20, 40],
   });
 
+  const lastUpdated = timestamp ? calculateTimeDifference(new Date(timestamp)) : "Unknown";
+
   const marker = L.marker([lat, lng], { icon: customIcon })
-    .bindPopup(`<b>${username}</b>`);
+    .bindPopup(`<b>${username}</b><br>${lastUpdated}`);
   marker.addTo(map);
 
   markers[username] = marker;
 }
+
+// Calculate time difference for display
+function calculateTimeDifference(timestamp) {
+  const now = new Date();
+  const diffInMinutes = Math.floor((now - timestamp) / (1000 * 60));
+
+  if (diffInMinutes < 1) return "Just now";
+  if (diffInMinutes < 60) return `${diffInMinutes} mins ago`;
+  const diffInHours = Math.floor(diffInMinutes / 60);
+  return diffInHours === 1 ? "1 hr ago" : `${diffInHours} hrs ago`;
+}
+
 
 
 // Save username and avatar (only for first-time users)
@@ -69,10 +83,11 @@ async function fetchAndUpdateMarkers(map) {
   const users = await response.json();
 
   users.forEach(user => {
-    const { UserID, Latitude, Longitude, Avatar } = user;
-    updateMarker(map, Latitude, Longitude, UserID, Avatar || `${avatarFolder}01.png`);
+    const { UserID, Latitude, Longitude, Avatar, Timestamp } = user;
+    updateMarker(map, Latitude, Longitude, UserID, Avatar || `${avatarFolder}01.png`, Timestamp);
   });
 }
+
 
 // Center the map on the user's location
 function centerMap(lat, lng) {
@@ -187,5 +202,14 @@ document.getElementById("center-map").addEventListener("click", () => {
 populateAvatars();
 window.onload = () => {
   greetUser();
-  initMap(); // Initialize the map on page load
+  initMap();
+  adjustMapHeight();
 };
+
+function adjustMapHeight() {
+  const mapElement = document.getElementById("map");
+  const navbarHeight = document.querySelector(".navbar").offsetHeight;
+  const containerHeight = document.querySelector(".container").offsetHeight;
+  mapElement.style.height = `${window.innerHeight - navbarHeight - containerHeight}px`;
+}
+
