@@ -1,5 +1,5 @@
 const SHEET_URL = "https://script.google.com/macros/s/AKfycbzgRtEcp2ZBLqERAG947frZB_Vnm4DA7Ds50qUN6NchnZCVCjshMesCvF4TBGJ0Zni8/exec";
-const SHEET_FETCH_URL = "https://docs.google.com/spreadsheets/d/1IZ335t9duRfDj4_Zbj00sd3ZVAzy7n0urMWu0feJ7FE/gviz/tq?tqx=out:csv";
+const SHEET_FETCH_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRbejw6RPrxUAlp6i-sKu-jgu1DXYyXhjwkAZ4sYwA1RJvMNzjAnecXvCL1O-hEKkLXf91Qo7pL6Znt/pub?output=csv";
 
 const map = L.map("map").setView([0, 0], 2);
 L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
