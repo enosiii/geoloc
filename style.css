@@ -8,6 +8,27 @@ body {
   background: #f4f4f9;
 }
 
+.navbar {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+  background: #007bff;
+}
+
+.navbar button {
+  padding: 10px;
+  color: white;
+  background: #0056b3;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.navbar button:hover {
+  background: #003f7f;
+}
+
 .container {
   margin-top: 20px;
   text-align: center;
