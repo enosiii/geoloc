@@ -45,14 +45,17 @@ function updateMarker(map, lat, lng, username, avatar) {
   markers[username] = marker; // Save marker for future reference
 }
 
-// Save username and avatar
+// Save username and avatar (only for first-time users)
 function saveUserData() {
-  username = document.getElementById("username").value.trim();
-  if (!username) {
-    alert("Please enter a username!");
-    return false;
+  if (!username) { // Only prompt for a username if not already set
+    const inputUsername = document.getElementById("username").value.trim();
+    if (!inputUsername) {
+      alert("Please enter a username!");
+      return false;
+    }
+    username = inputUsername; // Set username
+    localStorage.setItem("username", username);
   }
-  localStorage.setItem("username", username);
   localStorage.setItem("avatar", selectedAvatar);
   return true;
 }
@@ -81,20 +84,26 @@ async function updateUserOnSheet(lat, lng) {
   });
 }
 
-// Main function
+// Main function to start location sharing
 async function main() {
+  if (!username) {
+    if (!saveUserData()) return; // Ensure username is saved for new users
+  }
+
   if (navigator.geolocation) {
     navigator.geolocation.watchPosition(async (position) => {
       const { latitude, longitude } = position.coords;
 
-      if (saveUserData()) {
-        await updateUserOnSheet(latitude, longitude);
-        updateMarker(map, latitude, longitude, username, selectedAvatar);
-      }
+      // Update location data on Google Sheet and map
+      await updateUserOnSheet(latitude, longitude);
+      updateMarker(map, latitude, longitude, username, selectedAvatar);
     });
+  } else {
+    alert("Geolocation is not supported by your browser.");
   }
 
-  setInterval(() => fetchAndUpdateMarkers(map), 10000); // Refresh markers every 10 seconds
+  // Fetch all markers periodically
+  setInterval(() => fetchAndUpdateMarkers(map), 10000);
 }
 
 // Generate avatars
