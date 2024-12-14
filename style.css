@@ -1,4 +1,4 @@
-body {
+/*body {
   margin: 0;
   font-family: Arial, sans-serif;
   display: flex;
@@ -6,6 +6,12 @@ body {
   align-items: center;
   height: 100vh;
   background: #f4f4f9;
+}*/
+
+body {
+  display: flex;
+  flex-direction: column;
+  height: 100vh; /* Full height */
 }
 
 .navbar {
@@ -41,12 +47,13 @@ body {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  height: 20%;
+  height: 15%;
+  margin: 10px;
 }
 
 #map {
   flex-grow: 1;
-  height: 70%; /* Use remaining space */
+  height: 80%; /* Use remaining space */
   width: 100%;
   border: 1px solid #ddd;
 }
