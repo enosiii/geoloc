@@ -1,35 +1,28 @@
+<!-- <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"> -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Real-Time Location Sharing</title>
+  <title>Location Sharing</title>
   <link rel="stylesheet" href="style.css">
-  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css">
-  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script defer src="script.js"></script>
 </head>
 <body>
-  <!-- Header -->
-  <header>
+  <div class="container">
     <h1>Real-Time Location Sharing</h1>
-  </header>
-
-  <!-- Main Content -->
-  <div id="map-container">
-    <div id="map"></div>
-    <div id="user-setup">
-      <h3>Set Up Your Profile</h3>
-      <input type="text" id="username" placeholder="Enter your username" />
-      <div id="avatar-picker">
-        <h3>Select Your Avatar</h3>
-        <div class="avatars">
-          <!-- Avatar options dynamically added here -->
-        </div>
-      </div>
-      <button id="confirm-setup">Save Profile & Start Sharing</button>
+    <div class="username-section">
+      <label for="username">Enter your username:</label>
+      <input type="text" id="username" placeholder="Enter username">
     </div>
+    <div class="avatar-section">
+      <label>Select your avatar:</label>
+      <div class="avatars" id="avatar-list">
+        <!-- JavaScript will dynamically populate these -->
+      </div>
+    </div>
+    <button id="start-sharing">Start Sharing</button>
   </div>
-
-  <script src="script.js"></script>
+  <div id="map"></div>
 </body>
 </html>
