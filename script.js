@@ -94,6 +94,10 @@ function centerMap(lat, lng) {
   map.setView([lat, lng], 15); // Adjust zoom level
 }
 
+function centerMapOnLoad(lat, lng) {
+  map.setView([14.87, 120.826], 50); // Adjust zoom level
+}
+
 // Update user data on Google Sheets
 async function updateUserOnSheet(lat, lng) {
   await fetch(SHEET_URL, {
