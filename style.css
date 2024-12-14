@@ -35,9 +35,12 @@ body {
 }
 
 #map {
-  height: 70%;
+  height: 70vh; /* Ensure height takes up space on the page */
   width: 100%;
+  margin-top: 20px; /* Add spacing if needed */
+  border: 1px solid #ddd; /* Optional: for clarity */
 }
+
 
 .username-section,
 .avatar-section {
