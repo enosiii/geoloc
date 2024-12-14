@@ -1,104 +1,108 @@
 const SHEET_URL = "https://script.google.com/macros/s/AKfycbzgRtEcp2ZBLqERAG947frZB_Vnm4DA7Ds50qUN6NchnZCVCjshMesCvF4TBGJ0Zni8/exec";
-const SHEET_FETCH_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRbejw6RPrxUAlp6i-sKu-jgu1DXYyXhjwkAZ4sYwA1RJvMNzjAnecXvCL1O-hEKkLXf91Qo7pL6Znt/pub?output=csv";
+const avatarFolder = "assets/markers/";
+const avatarCount = 03; // Number of avatars in the folder
 
-const map = L.map("map").setView([0, 0], 2);
-L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-  attribution: "© OpenStreetMap contributors"
-}).addTo(map);
-
-let selectedAvatar = localStorage.getItem("avatar") || "assets/markers/01.png";
 let username = localStorage.getItem("username") || "";
+let selectedAvatar = localStorage.getItem("avatar") || `${avatarFolder}01.png`;
 
-document.addEventListener("DOMContentLoaded", () => {
-  loadAvatars();
-  loadUserSetup();
-  document.getElementById("confirm-setup").addEventListener("click", saveUserProfile);
-});
+// Initialize the map
+function initMap() {
+  const map = L.map("map").setView([0, 0], 2); // Default view (world)
+  
+  // Add a tile layer (using Leaflet with OpenStreetMap)
+  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    attribution: '© OpenStreetMap contributors'
+  }).addTo(map);
 
-function loadAvatars() {
-  const avatarContainer = document.querySelector(".avatars");
-  for (let i = 1; i <= 3; i++) {
-    const img = document.createElement("img");
-    img.src = `assets/markers/${String(i).padStart(2, "0")}.png`;
-    img.alt = `Avatar ${i}`;
-    if (selectedAvatar === img.src) img.classList.add("selected");
-    img.addEventListener("click", () => selectAvatar(img));
-    avatarContainer.appendChild(img);
-  }
+  return map;
 }
 
-function selectAvatar(img) {
-  document.querySelectorAll(".avatars img").forEach(img => img.classList.remove("selected"));
-  img.classList.add("selected");
-  selectedAvatar = img.src;
+// Add the user's marker to the map
+function addMarkerToMap(map, lat, lng, username, avatar) {
+  const customIcon = L.icon({
+    iconUrl: avatar,
+    iconSize: [40, 40], // Customize marker size
+    iconAnchor: [20, 40],
+  });
+
+  L.marker([lat, lng], { icon: customIcon })
+    .bindPopup(`<b>${username}</b>`)
+    .addTo(map);
 }
 
-function loadUserSetup() {
-  const usernameInput = document.getElementById("username");
-  if (username) {
-    usernameInput.value = username;
+// Save username and avatar
+function saveUserData() {
+  username = document.getElementById("username").value.trim();
+  if (!username) {
+    alert("Please enter a username!");
+    return false;
   }
-}
 
-function saveUserProfile() {
-  const usernameInput = document.getElementById("username");
-  if (usernameInput.value.trim() === "") {
-    alert("Please enter a username.");
-    return;
-  }
-  username = usernameInput.value.trim();
   localStorage.setItem("username", username);
   localStorage.setItem("avatar", selectedAvatar);
-  alert("Profile saved! Starting location sharing...");
-  startLocationSharing();
+  return true;
 }
 
-// Store markers by UserID
-const userMarkers = {};
+// Fetch all users from Google Sheets and display them on the map
+async function fetchAndUpdateMarkers(map) {
+  const response = await fetch(SHEET_URL);
+  const users = await response.json();
 
-async function fetchLocations() {
-  const response = await fetch(SHEET_FETCH_URL);
-  const data = await response.text();
-
-  const rows = data.split("\n").slice(1); // Skip header
-  rows.forEach(row => {
-    const [userId, lat, lng] = row.split(",");
-    const latNum = parseFloat(lat);
-    const lngNum = parseFloat(lng);
-
-    if (!userMarkers[userId]) {
-      userMarkers[userId] = L.marker([latNum, lngNum], {
-        icon: L.icon({
-          iconUrl: selectedAvatar,
-          iconSize: [40, 40]
-        })
-      }).addTo(map);
-    } else {
-      userMarkers[userId].setLatLng([latNum, lngNum]);
-    }
+  users.forEach(user => {
+    const { UserID, Latitude, Longitude } = user;
+    const avatarPath = `${avatarFolder}${user.UserID}.png` || `${avatarFolder}01.png`;
+    addMarkerToMap(map, Latitude, Longitude, UserID, avatarPath);
   });
 }
 
-function startLocationSharing() {
+// Main function
+async function main() {
+  const map = initMap();
+
+  // Center map on user's location
   if (navigator.geolocation) {
     navigator.geolocation.watchPosition(async (position) => {
       const { latitude, longitude } = position.coords;
 
-      await fetch(SHEET_URL, {
-        method: "POST",
-        body: JSON.stringify({
-          UserID: username,
-          Latitude: latitude,
-          Longitude: longitude
-        })
-      });
+      if (saveUserData()) {
+        // Post user's data to Google Sheets
+        await fetch(SHEET_URL, {
+          method: "POST",
+          body: JSON.stringify({ UserID: username, Latitude: latitude, Longitude: longitude })
+        });
 
-      map.setView([latitude, longitude], 13);
-      fetchLocations();
+        // Add or update user's marker
+        addMarkerToMap(map, latitude, longitude, username, selectedAvatar);
+      }
     });
-  } else {
-    alert("Geolocation is not supported by your browser.");
   }
 
-  setInterval(fetchLocations, 5000);
+  // Fetch and display all users
+  setInterval(() => fetchAndUpdateMarkers(map), 10000); // Update every 10 seconds
 }
+
+// Generate avatar selection
+function populateAvatars() {
+  const avatarList = document.getElementById("avatar-list");
+  for (let i = 1; i <= avatarCount; i++) {
+    const avatarPath = `${avatarFolder}${String(i).padStart(2, "0")}.png`;
+    const img = document.createElement("img");
+
+    img.src = avatarPath;
+    img.className = "avatar";
+    img.addEventListener("click", () => {
+      document.querySelectorAll(".avatar").forEach(el => el.classList.remove("selected"));
+      img.classList.add("selected");
+      selectedAvatar = avatarPath;
+    });
+
+    if (avatarPath === selectedAvatar) img.classList.add("selected");
+    avatarList.appendChild(img);
+  }
+}
+
+// Start sharing button handler
+document.getElementById("start-sharing").addEventListener("click", main);
+
+// Populate avatars on page load
+populateAvatars();
