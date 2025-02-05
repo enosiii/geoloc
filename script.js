@@ -39,8 +39,8 @@ function updateMarker(map, lat, lng, username, avatar, timestamp) {
 
   const customIcon = L.icon({
     iconUrl: avatar,
-    iconSize: [40, 40],
-    iconAnchor: [20, 40],
+    iconSize: [80, 80],
+    iconAnchor: [20, 80],
   });
 
   const lastUpdated = timestamp ? calculateTimeDifference(new Date(timestamp)) : "--";
