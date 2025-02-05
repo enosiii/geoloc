@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Location Sharing</title>
+  <link rel="stylesheet" href="style.css">
+  <script defer src="script.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <link rel="manifest" href="/manifest.json">
+</head>
+<body>
+  <div class="navbar">
+    <label class="greet">Share Location</label>
+    <button id="change-name">Change Name</button>
+    <button id="center-map">Center</button>
+    <button id="refresh-page">↺</button>
+    <button id="clear-markers">Clear Markers</button>
+    <button id="stop-sharing">Stop Sharing</button>
+  </div>
+
+  <div class="container">
+    <label id="greet-label"></label>
+    <div class="username-section" id="username-section">
+      <label for="username">Enter your username:</label>
+      <input type="text" id="username" placeholder="Enter username">
+    </div>
+    <div class="avatar-section">
+      <div class="avatars" id="avatar-list">
+        <!-- JavaScript will dynamically populate these -->
+      </div>
+    </div>
+    <button id="start-sharing">Start Sharing</button>
+  </div>
+
+  <div id="map"></div>
+  <div id="loading-spinner" class="spinner"></div>
+  <div id="notification" class="notification"></div>
+  <script>
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", () => {
+      navigator.serviceWorker
+        .register("/service-worker.js")
+        .then((registration) => {
+          console.log("Service Worker registered: ", registration);
+        })
+        .catch((error) => {
+          console.log("Service Worker registration failed: ", error);
+        });
+    });
+  }
+</script>
+</body>
+</html>
