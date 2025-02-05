@@ -6,7 +6,6 @@ const ASSETS_TO_CACHE = [
   "/script.js",
   "https://unpkg.com/leaflet/dist/leaflet.css",
   "https://unpkg.com/leaflet/dist/leaflet.js",
-  /*
   "/assets/markers/01.png",
   "/assets/markers/02.png",
   "/assets/markers/03.png",
@@ -15,36 +14,37 @@ const ASSETS_TO_CACHE = [
   "/assets/markers/06.png",
   "/assets/markers/07.png",
   "/icons/icon-192x192.png",
-  "/icons/icon-512x512.png",*/
+  "/icons/icon-512x512.png"
   // Add paths to your avatar images and other assets here
 ];
 
-// Install the service worker and cache assets
-self.addEventListener("install", (event) => {
+
+
+// Install event - Caching essential resources
+self.addEventListener('install', (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(ASSETS_TO_CACHE);
-    })
+    caches.open(CACHE_NAME)
+      .then((cache) => cache.addAll(ASSETS_TO_CACHE);
+    })))
   );
 });
 
-// Fetch cached assets or make network requests
-self.addEventListener("fetch", (event) => {
+// Fetch event - Serving cached resources
+self.addEventListener('fetch', (event) => {
   event.respondWith(
-    caches.match(event.request).then((response) => {
-      return response || fetch(event.request);
-    })
+    caches.match(event.request)
+      .then((response) => response || fetch(event.request))
   );
 });
 
-// Clean up old caches
-self.addEventListener("activate", (event) => {
+// Activate event - Clean up old caches
+self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((cacheNames) => {
       return Promise.all(
-        cacheNames.map((cacheName) => {
-          if (cacheName !== CACHE_NAME) {
-            return caches.delete(cacheName);
+        cacheNames.map((cache) => {
+          if (cache !== CACHE_NAME) {
+            return caches.delete(cache);
           }
         })
       );
