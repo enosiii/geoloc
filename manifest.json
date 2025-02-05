@@ -1,6 +1,6 @@
 {
-  "short_name": "Share Loc",
-  "name": "Geolocation Sharing App",
+  "short_name": "Share Loc📍",
+  "name": "📍Share Loc ",
   "description": "Share your location with others in real-time.",
   "icons": [
     {
@@ -14,9 +14,8 @@
       "sizes": "512x512"
     }
   ],
-  "start_url": "/",
-  "background_color": "#007bff",
+  "start_url": "index.html",
+  "background_color": "#000000",
   "display": "standalone",
-  "scope": "/",
-  "theme_color": "#007bff"
+  "theme_color": "#000000"
 }
