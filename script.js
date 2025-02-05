@@ -29,7 +29,7 @@ function initMap() {
   }).addTo(map);
 }
 
-// Add or update a marker on the map
+/*// Add or update a marker on the map
 function updateMarker(map, lat, lng, username, avatar, timestamp) {
   console.log(`Updating marker for ${username} at (${lat}, ${lng}) with avatar ${avatar}`);
 
@@ -41,6 +41,33 @@ function updateMarker(map, lat, lng, username, avatar, timestamp) {
     iconUrl: avatar,
     iconSize: [80, 80],
     iconAnchor: [20, 80],
+  });
+
+  const lastUpdated = timestamp ? calculateTimeDifference(new Date(timestamp)) : "--";
+
+  const marker = L.marker([lat, lng], { icon: customIcon })
+    .bindPopup(`<b>${username}</b><br>${lastUpdated}`);
+  marker.addTo(map);
+
+  markers[username] = marker;
+}*/
+
+function updateMarker(map, lat, lng, username, avatar, timestamp) {
+  console.log(`Updating marker for ${username} at (${lat}, ${lng}) with avatar ${avatar}`);
+
+  if (markers[username]) {
+    map.removeLayer(markers[username]);
+  }
+
+  // Determine icon size based on screen width
+  const isMobile = window.innerWidth < 768; // Check if screen width is less than 768px
+  const iconSize = isMobile ? [50, 50] : [80, 80]; // Smaller size for mobile, larger for desktop
+  const iconAnchor = isMobile ? [25, 50] : [40, 80]; // Adjust anchor point accordingly
+
+  const customIcon = L.icon({
+    iconUrl: avatar,
+    iconSize: iconSize, // Dynamic size based on screen width
+    iconAnchor: iconAnchor, // Dynamic anchor based on screen width
   });
 
   const lastUpdated = timestamp ? calculateTimeDifference(new Date(timestamp)) : "--";
