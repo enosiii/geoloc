@@ -1,4 +1,4 @@
-const CACHE_NAME = "geolocation-sharing-v1";
+const CACHE_NAME = "geoloc-v1";
 const ASSETS_TO_CACHE = [
   "/",
   "/index.html",
@@ -6,6 +6,7 @@ const ASSETS_TO_CACHE = [
   "/script.js",
   "https://unpkg.com/leaflet/dist/leaflet.css",
   "https://unpkg.com/leaflet/dist/leaflet.js",
+  /*
   "/assets/markers/01.png",
   "/assets/markers/02.png",
   "/assets/markers/03.png",
@@ -14,7 +15,7 @@ const ASSETS_TO_CACHE = [
   "/assets/markers/06.png",
   "/assets/markers/07.png",
   "/icons/icon-192x192.png",
-  "/icons/icon-512x512.png",
+  "/icons/icon-512x512.png",*/
   // Add paths to your avatar images and other assets here
 ];
 
