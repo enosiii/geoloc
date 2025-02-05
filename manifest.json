@@ -14,7 +14,7 @@
       "sizes": "512x512"
     }
   ],
-  "start_url": "/",
+  "start_url": "https://enosiii.github.io/geoloc/",
   "background_color": "#000000",
   "display": "fullscreen",
   "theme_color": "#000000"
