@@ -127,6 +127,7 @@ button:hover {
   padding: 10px 20px;
   border-radius: 5px;
   display: none;
+  z-index: 2000; /* Ensures it stays on top */
 }
 
 
