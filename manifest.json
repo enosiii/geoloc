@@ -16,6 +16,6 @@
   ],
   "start_url": "https://enosiii.github.io/geoloc/",
   "background_color": "#000000",
-  "display": "fullscreen",
+  "display": "standalone",
   "theme_color": "#000000"
 }
